@@ -18,18 +18,22 @@ class UpdateState extends FlxState {
 		bg.y = 1;
 
 		add(bg);
+
 	}
 
 	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
 		if (bg != null) {
-			var move:Float = 0.1;
+			var move:Float = 0.25;
 			bg.x += move;
 			bg.y += move;
 			if (bg.x >= 0)
 				bg.x = -200;
 			if (bg.y >= 0)
 				bg.y = -200;
+		}
+		if(FlxG.keys.justPressed.ANY) {
+			Updater.checkForUpdates('8bitjake','HaxeUpdateTesting-Files',Updater.update);
 		}
 	}
 }
