@@ -7,6 +7,7 @@ import openfl.Assets;
 import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.Event;
+import Updater;
 
 using StringTools;
 
@@ -20,8 +21,8 @@ typedef Log = {
 class Main extends Sprite {
 	var gameWidth:Int = 480; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
 	var gameHeight:Int = 360; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
-	var initialState:Class<FlxState> = new FlxState(); // The FlxState the game starts with.
-	var framerate:Int = 120; // How many frames per second the game should run at.
+	var initialState:Class<FlxState> = UpdateState; // The FlxState the game starts with.
+	var framerate:Int = 60; // How many frames per second the game should run at.
 	var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 	var startFullscreen:Bool = false; // Whether to start the game in fullscreen on desktop targets.
 
@@ -29,21 +30,13 @@ class Main extends Sprite {
 
 	public static var logs:Array<Log> = [];
 
-	var game_name:String = 'FUNKIN\' VISUALIZER';
+	var game_name:String = 'UPDATE TESTING';
 	var sep:String = '/';
 
 	public function new() {
 		super();
-		#if html5
-		skipSplash = false;
-		framerate = Std.int(framerate / 2);
-		EXT = "mp3";
-		#end
 		replaceTrace(game_name, sep);
-
-		#if CRASH_HANDLER
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
-		#end
+		Updater.initVersionFile();
 
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, framerate, framerate, skipSplash, startFullscreen));
 		// replaceTrace('FUNKIN\' VISUALIZER','/');
