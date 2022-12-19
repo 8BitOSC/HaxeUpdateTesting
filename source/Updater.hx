@@ -81,7 +81,7 @@ class Updater {
 							FileSystem.deleteFile(file.path);
 						} else {
 							trace('removing folder: ' + file.path);
-							FileSystem.deleteDirectory(file.path);
+							recursivelyDelete(file.path);
 						}
 					}
 
@@ -98,12 +98,26 @@ class Updater {
 						timeout 1
                         ren tmp.exe $exeFile
                         start $exeFile');
-						saveFile(file, 'tmp.exe', function() {
+						saveFile(file, 'tmp.exe', function(data) {
 							Sys.command('start tmp.bat');
 						});
 					}
 			}
 		}
+	}
+
+	private static function recursivelyDelete(path:String) {
+		var files:Array<String> = FileSystem.readDirectory(path);
+		for (f in files) {
+			var filePath:String = path + '/' + f;
+			if (FileSystem.isDirectory(filePath)) {
+				recursivelyDelete(filePath);
+			} else {
+				trace('removing file: ' + filePath);
+				FileSystem.deleteFile(filePath);
+			}
+		}
+		FileSystem.deleteDirectory(path);
 	}
 
 	private static function saveFile(file:FileMetadata, ?forcePath:String, ?callback:Dynamic) {
@@ -135,7 +149,7 @@ class Updater {
 			fileOutput.close();
 
 			if (callback != null) {
-				callback();
+				callback(downloadStream.data);
 			}
 		});
 		downloadStream.load(request);
@@ -148,6 +162,8 @@ class Updater {
 	public static function checkForUpdates(user:String, repo:String, branch:String = 'main', ?callback:Dynamic) {}
 
 	public static function update() {}
+
+	private static function recursivelyDelete(path:String) {}
 
 	private static function saveFile(file:FileMetadata) {}
 }
